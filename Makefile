@@ -1,9 +1,12 @@
 CC = g++
 
-all: znstar
+all: gen_znstar_instances
 
-znstar: znstar.o
-	$(CC) -o znstar znstar.o
+gen_znstar_instances: gen_znstar_instances.o
+	$(CC) -o gen_znstar_instances gen_znstar_instances.o dislog.o
 
-znstar.o: znstar.cpp
-	$(CC) -c znstar.cpp -o znstar.o
+gen_znstar_instances.o: gen_znstar_instances.cpp dislog.h
+	$(CC) -c gen_znstar_instances.cpp -o gen_znstar_instances.o
+
+dislog.o: dislog.cpp dislog.h
+	$(CC) -c dislog.cpp -o dislog.o
