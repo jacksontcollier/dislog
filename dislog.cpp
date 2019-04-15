@@ -1,5 +1,6 @@
 #include "dislog.h"
 
+#include <ctime>
 #include <set>
 #include <utility>
 #include <vector>
@@ -98,3 +99,43 @@ std::pair<unsigned long, unsigned long> get_zpstar_generator(unsigned long p)
     return std::make_pair(p, 0);
 }
 
+long double time_naive_dislog_znstar(unsigned long n, unsigned long g)
+{
+    std::vector<long double> dislog_times;
+    unsigned long result;
+    std::clock_t start_time, end_time;
+
+    for (unsigned long h = 2; h < n; h++) {
+        if (h == g) {
+            continue;
+        }
+
+        start_time = std::clock();
+
+        // Naively compute discrete log of h with respect to g
+        for (unsigned long x = 2; x < n-1; x++) {
+            result = mod_exp(g, x, n);
+            if (result == h) {
+                end_time = std::clock();
+                dislog_times.push_back(1000.0 * ((end_time - start_time) / CLOCKS_PER_SEC));
+                break;
+            }
+        }
+    }
+
+    // Average times
+    long double average_time = 0.0;
+
+    for (size_t i = 0; i < dislog_times.size(); i++) {
+        average_time += dislog_times[i];
+    }
+
+    average_time = average_time / (long double) dislog_times.size();
+
+    return average_time;
+}
+
+long double time_bstep_gstep_dislog_znstar(unsigned long n, unsigned long g)
+{
+    return 0.0;
+}
