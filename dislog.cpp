@@ -1,7 +1,10 @@
 #include "dislog.h"
 
+#include <cmath>
+#include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <map>
 #include <set>
 #include <utility>
 #include <vector>
@@ -138,5 +141,60 @@ long double time_naive_dislog_znstar(unsigned long n, unsigned long g)
 
 long double time_bstep_gstep_dislog_znstar(unsigned long n, unsigned long g)
 {
-    return 0.0;
+    unsigned long t;
+    unsigned long num_giant_steps;
+    unsigned long g_sub_i;
+    unsigned long answer;
+    unsigned long h_sub_i;
+    std::map<unsigned long, unsigned long> table;
+    std::map<unsigned long, unsigned long>::iterator searcher;
+    std::clock_t start_time, end_time;
+    bool log_found;
+    std::vector<long double> dislog_times;
+
+    for (unsigned long h = 2; h < n; h++) {
+        if (h == g) {
+            continue;
+        }
+
+        log_found = false;
+
+        table.clear();
+        start_time = std::clock();
+        t = std::floor(std::sqrt(n-1));
+        num_giant_steps = std::floor((n-1) / t);
+        for (unsigned long i = 0; i <= num_giant_steps; i++) {
+            g_sub_i = mod_exp(g, i * t, n);
+            table.insert(std::make_pair(g_sub_i, i * t));
+        }
+        for (unsigned long i = 1; i <= t; i++) {
+            h_sub_i = (h * mod_exp(g, i, n)) % n;
+            searcher = table.find(h_sub_i);
+            if (searcher != table.end()) {
+                answer = ((searcher->second - i) % n-1);
+                end_time = std::clock();
+                dislog_times.push_back(1000.0 * (end_time - start_time) / CLOCKS_PER_SEC);
+                if (mod_exp(g, answer, n) != h) {
+                    std::cout << "INCORRECT ANSWER IN BABY STEP GIANT STEP\n";
+                    exit(EXIT_FAILURE);
+                }
+                log_found = true;
+            }
+        }
+        if (!log_found) {
+            std::cout << "FAILED TO COMPUTE DISCRETE LOG FOR SOME ELEMENT\n";
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Average times
+    long double average_time = 0.0;
+
+    for (size_t i = 0; i < dislog_times.size(); i++) {
+        average_time += dislog_times[i];
+    }
+
+    average_time = average_time / (long double) dislog_times.size();
+
+    return average_time;
 }
