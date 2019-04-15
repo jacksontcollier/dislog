@@ -1,6 +1,7 @@
 #include "dislog.h"
 
 #include <ctime>
+#include <iostream>
 #include <set>
 #include <utility>
 #include <vector>
@@ -117,7 +118,7 @@ long double time_naive_dislog_znstar(unsigned long n, unsigned long g)
             result = mod_exp(g, x, n);
             if (result == h) {
                 end_time = std::clock();
-                dislog_times.push_back(1000.0 * ((end_time - start_time) / CLOCKS_PER_SEC));
+                dislog_times.push_back(1000.0 * (end_time - start_time) / CLOCKS_PER_SEC);
                 break;
             }
         }
