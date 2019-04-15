@@ -49,25 +49,25 @@ std::vector<unsigned long> gen_primes(unsigned long start, unsigned long end)
 {
     std::vector<unsigned long> primes;
     unsigned long p = start;
-    
+
     if (p == 1) {
         p++;
-    } 
-    
+    }
+
     if (p == 2) {
         primes.push_back(p);
         p++;
     } else if ((p % 2) == 0) {
         p++;
-    } 
-    
+    }
+
     for (; p <= end; p += 2) {
         if (is_prime(p)) {
             primes.push_back(p);
         }
     }
 
-    return primes; 
+    return primes;
 }
 
 // Find a generator for znstar with n a prime p. Return the modulus p and generator g
@@ -75,7 +75,7 @@ std::vector<unsigned long> gen_primes(unsigned long start, unsigned long end)
 std::pair<unsigned long, unsigned long> get_zpstar_generator(unsigned long p)
 {
     unsigned long g = 2;
-    
+
     for (; g < p; g++) {
         bool is_generator = true;
         std::set<unsigned long> generated_elements;
